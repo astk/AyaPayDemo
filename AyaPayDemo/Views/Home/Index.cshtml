@@ -1,0 +1,21 @@
+﻿@model AyaPayDemo.Models.Order 
+
+@{
+    ViewData["Title"] = "Home Page";
+}
+
+<div class="text-center">
+    <h1 class="display-4">Welcome to AYAPay Demo!</h1>
+    <p>Product Name: Americano Coffee</p>
+    <p>Price: 1,000 MMK</p>
+
+    <form asp-action="Buy">
+        <div class="form-group">
+            <label class="control-label">Enter Aya Pay Wallet Mobile Number:</label>
+            <input asp-for="WalletMobile" class="form-control" />
+        </div>
+        <div class="form-group">
+            <input type="submit" value="Buy" class="btn btn-primary" />
+        </div>
+    </form>
+</div>
