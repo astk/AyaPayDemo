@@ -1,0 +1,389 @@
+{
+	"info": {
+		"_postman_id": "321428b4-ff1d-440a-9c7d-1ebe834c7707",
+		"name": "OnlineMerchant Partner",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Get access token",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "61ea32d1-91e1-4082-b95e-1ee9ee124f7c",
+						"exec": [
+							"pm.test(\"Successful POST request\", function () {",
+							"    pm.expect(pm.response.code).to.be.oneOf([200,202]);",
+							"var data = pm.response.json();",
+							"console.log(data);",
+							"if(data.access_token) {",
+							"  pm.globals.set(\"accessToken\", data.access_token);",
+							"  pm.environment.set(\"accessToken\",data.access_token);",
+							"",
+							"  ",
+							"}",
+							"})",
+							"",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Basic ZnBMTTlhR29sTXF0WU5FRWVzRVVONklNdDJBYTpKcUxIZ2ZPMzhaNDZZY2JuUWVSeGZXZ1B0ZW9h",
+						"type": "text"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text",
+						"disabled": true
+					}
+				],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "grant_type",
+							"value": "client_credentials",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "{{wso2link}}/token",
+					"host": [
+						"{{wso2link}}"
+					],
+					"path": [
+						"token"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get user token",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "34da79ac-7cf8-4fda-b576-9ef80badab87",
+						"exec": [
+							"pm.test(\"Successful POST request\", function () {",
+							"    pm.expect(pm.response.code).to.be.oneOf([200,202]);",
+							"var data = pm.response.json();",
+							"console.log(data);",
+							"if(data.err==200 && data.token) {",
+							"  pm.globals.set(\"token\", data.token.token);",
+							"  pm.environment.set(\"token\",data.token.token);",
+							"  ",
+							"}",
+							"",
+							"console.log(  pm.environment.get(\"token\"));});",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "Token",
+						"value": "Bearer {{accessToken}}"
+					}
+				],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "phone",
+							"value": "09788858420",
+							"type": "text"
+						},
+						{
+							"key": "password",
+							"value": "333666",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "{{wso2link}}{{wso2base}}/thirdparty/merchant/login",
+					"host": [
+						"{{wso2link}}{{wso2base}}"
+					],
+					"path": [
+						"thirdparty",
+						"merchant",
+						"login"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Request QR Payment",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "21638e92-50b2-441d-bb68-39dd84421e2a",
+						"exec": [
+							"pm.test(\"Successful POST request\", function () {",
+							"    pm.expect(pm.response.code).to.be.oneOf([200,202]);",
+							"var data = pm.response.json();",
+							"console.log(data);",
+							"if(data.err==200 ) {",
+							"  pm.globals.set(\"qrCode\", data.data.qrdata);",
+							"    pm.globals.set(\"REFERENCENUMBER\", data.data.referenceNumber);",
+							"",
+							"  ",
+							"",
+							"  ",
+							"}",
+							"",
+							"console.log(pm.globals.get(\"qrCode\"));});",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Token",
+						"value": "Bearer {{accessToken}}"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "Accept-Language",
+						"value": "en"
+					},
+					{
+						"key": "Authorization",
+						"value": "Bearer {{token}}"
+					}
+				],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "amount",
+							"value": "1000",
+							"type": "text"
+						},
+						{
+							"key": "externalTransactionId",
+							"value": "000100020004",
+							"type": "text"
+						},
+						{
+							"key": "externalAdditionalData",
+							"value": "\"billDetail\"",
+							"type": "text"
+						},
+						{
+							"key": "currency",
+							"value": "MMK",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "{{wso2link}}{{wso2base}}/thirdparty/merchant/requestQRPayment",
+					"host": [
+						"{{wso2link}}{{wso2base}}"
+					],
+					"path": [
+						"thirdparty",
+						"merchant",
+						"requestQRPayment"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Request Payment Push",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "7dcd4142-2b8e-4d2a-8492-e6c14b6edc6f",
+						"exec": [
+							"pm.test(\"Successful POST request\", function () {",
+							"    pm.expect(pm.response.code).to.be.oneOf([200,202]);",
+							"var data = pm.response.json();",
+							"console.log(data);",
+							"if(data.err==200 ) {",
+							"    pm.globals.set(\"REFERENCENUMBER\", data.data.referenceNumber),",
+							"    pm.globals.set(\"TRANSACTIONID\", data.data.externalTransactionId)",
+							"",
+							"}",
+							"})"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Token",
+						"value": "Bearer {{accessToken}}"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "Accept-Language",
+						"value": "en",
+						"disabled": true
+					},
+					{
+						"key": "Authorization",
+						"value": "Bearer {{token}}"
+					}
+				],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "customerPhone",
+							"value": "09420595911",
+							"type": "text"
+						},
+						{
+							"key": "amount",
+							"value": "1000",
+							"type": "text"
+						},
+						{
+							"key": "currency",
+							"value": "MMK",
+							"type": "text"
+						},
+						{
+							"key": "externalTransactionId",
+							"value": "2020060314170002",
+							"type": "text"
+						},
+						{
+							"key": "externalAdditionalData",
+							"value": "PPK Production test.",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "{{wso2link}}{{wso2base}}/thirdparty/merchant/requestPushPayment",
+					"host": [
+						"{{wso2link}}{{wso2base}}"
+					],
+					"path": [
+						"thirdparty",
+						"merchant",
+						"requestPushPayment"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "refundPayment",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "9ce33bd6-fdb9-4358-85e0-416b7c36451f",
+						"exec": [
+							"pm.test(\"Successful POST request\", function () {",
+							"    pm.expect(pm.response.code).to.be.oneOf([200,202]);",
+							"var data = pm.response.json();",
+							"console.log(data);",
+							"if(data.err==200 ) {",
+							"  pm.globals.set(\"qrCode\", data.data.qrdata);",
+							"",
+							"  ",
+							"}",
+							"",
+							"console.log(pm.globals.get(\"qrCode\"));});",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Token",
+						"value": "Bearer {{accessToken}}"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "Accept-Language",
+						"value": "en"
+					},
+					{
+						"key": "Authorization",
+						"value": "Bearer {{token}}"
+					}
+				],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "referenceNumber",
+							"value": "5ed87f9084b8c4f2138e8e17",
+							"type": "text"
+						},
+						{
+							"key": "externalTransactionId",
+							"value": "2020060314170002",
+							"type": "text"
+						}
+					],
+					"options": {}
+				},
+				"url": {
+					"raw": "{{wso2link}}{{wso2base}}/thirdparty/merchant/refundPayment",
+					"host": [
+						"{{wso2link}}{{wso2base}}"
+					],
+					"path": [
+						"thirdparty",
+						"merchant",
+						"refundPayment"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"protocolProfileBehavior": {}
+}
